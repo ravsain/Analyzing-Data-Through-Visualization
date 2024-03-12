@@ -31,9 +31,49 @@ The dataset includes the following variables:
 <br>
 By examining various factors mentioned above from the dataset, you aim to gain insights into how recessions impacted automobile sales for your company.
 
-## Importing Data
-"""
+### Importing Lib
+```python
+import numpy as np
+import pandas as pd
+%matplotlib inline
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import seaborn as sns
+import folium
+```
+### Importing Data
+```python
 URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DV0101EN-SkillsNetwork/Data%20Files/historical_automobile_sales.csv"
 df = pd.read_csv(URL)
 print('Data downloaded and read into a dataframe!')
-"""
+```
+### *Line chart* using the functionality of pandas to show how automobile sales fluctuate from year to year
+```python
+df_line = df.groupby(df['Year'])['Automobile_Sales'].mean()
+plt.figure(figsize=(10, 6))
+df_line.plot(kind = 'line', color = 'skyblue', marker = 'D', mec = 'black')
+plt.xlabel('Year')
+plt.ylabel('Sales Volume')
+plt.title('Automobile Sales Over Time')
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/2f71a524-9e68-4ac5-b2c0-5e89245d058c)
+
+#### More detail maodel
+```python
+df_line = df.groupby(df['Year'])['Automobile_Sales'].mean()
+plt.figure(figsize=(10, 6))
+df_line.plot(kind = 'line', color = 'skyblue', marker = 'D', mec = 'black', grid = True)
+plt.xticks(list(range(1980, 2024)), rotation = 75)
+plt.xlabel('Year')
+plt.ylabel('Sales Volume')
+plt.title('Automobile Sales Over Time')
+plt.text(1982, 650, '1981-82 Recession', rotation = 45)
+plt.text(2020, 2400, ' Covid Recession', rotation = 45)
+plt.legend()
+plt.savefig("Line_Plot_1.png")
+plt.show()
+```
+### different lines for categories of vehicle type and analyse the trend to to find out is there a noticeable difference in sales trends between different vehicle types during recession periods.
+
+
