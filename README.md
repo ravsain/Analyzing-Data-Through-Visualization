@@ -74,6 +74,108 @@ plt.legend()
 plt.savefig("Line_Plot_1.png")
 plt.show()
 ```
-### different lines for categories of vehicle type and analyse the trend to to find out is there a noticeable difference in sales trends between different vehicle types during recession periods.
+### Different lines for categories of vehicle type and analyse the trend to to find out is there a noticeable difference in sales trends between different vehicle types during recession periods.
+```pyhton
+df_Mline = df[df['Recession'] == 1].groupby(['Year','Vehicle_Type'], as_index=False)['Automobile_Sales'].sum()
+df_Mline.set_index('Year', inplace=True)
+df_Mline = df_Mline.groupby(['Vehicle_Type'])['Automobile_Sales']
+plt.figure(figsize=(10, 8))
+df_Mline.plot(kind='line', ax = plt.gca(), grid= True)
+plt.ylabel('SalesVolume')
+plt.title('Sales Trend Vehicle-wise during Recession')
+plt.legend(title = 'Vechile Type' )
+plt.tight_layout()
+plt.savefig("Line_Plot_2.png")
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/49e5021f-a7ae-4d4b-8da7-96848ffd1ed9)
+
+we can understand that during recession period, the sales for 'Sports type vehicles' declined because of the high cost of the vehicle.
+while sales of the superminicar and smallfamilycar increased.
+
+### Comparing the sales trend per vehicle type for a recession period with a non-recession period.
+```Python
+new_df = df.groupby('Recession')['Automobile_Sales'].mean().reset_index()
+plt.figure(figsize=(10, 8))
+sns.barplot(x = 'Recession', y = 'Automobile_Sales', hue = 'Recession', data = new_df)
+plt.xlabel('period')
+plt.ylabel('Average Sales volume')
+plt.title('Average Automobile Sales during Recession and Non-Recession')
+plt.xticks(ticks=[0, 1], labels=['Non-Recession', 'Recession'])
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/280582f7-7a6e-4b18-a60b-4a9a5b28c450)
+
+```python
+new_df = df.groupby(['Recession', 'Vehicle_Type'])['Automobile_Sales'].mean().reset_index()
+plt.figure(figsize=(10, 8))
+ax = sns.barplot(x = 'Recession', y = 'Automobile_Sales', hue = 'Vehicle_Type', data = new_df)
+for i in ax.containers:
+    ax.bar_label(i)
+
+plt.xlabel('period')
+plt.ylabel('Average Sales volume')
+plt.title('Average Automobile Sales during Recession and Non-Recession')
+plt.xticks(ticks=[0, 1], labels=['Non-Recession', 'Recession'])
+plt.savefig('Bar_Chart.png')
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/aba5eed3-52ff-40bc-a814-bf9a20be93f4)
+
+Through this we can understand that there is a drastic decline in the overall sales of the automobiles during recession.
+However, the most affected type of vehicle is executivecar and sports.
+
+### Sub Plotting to compare the variations in GDP during recession and non-recession period by developing line plots for each period.
+```python
+# Make use of <u>add_subplot() from Matplotlib for this comparision.
+rec_data = df[df['Recession'] == 1]
+non_rec_data = df[df['Recession'] == 0]
+
+fig = plt.figure(figsize=(12, 6))
+
+ax0 = fig.add_subplot(1, 2, 1)
+ax1 = fig.add_subplot(1, 2, 2)
+
+sns.lineplot(x = 'Year', y = 'GDP', marker = '*',
+             markerfacecolor = 'green', mec = 'green', data = rec_data, label = 'Recession', ax = ax0 )
+ax0.set_xlabel('year')
+ax0.set_ylabel('GDP')
+ax0.set_title('GDP Variation During Recession Period')
+
+sns.lineplot(x = 'Year', y = 'GDP', marker = '*', 
+             markerfacecolor = 'red', mec = 'red', data = non_rec_data, label = 'Non Recession', ax = ax1)
+ax1.set_xlabel('year')
+ax1.set_ylabel('GDP')
+ax1.set_title('GDP Variation During Non Recession Period')
+
+plt.tight_layout()
+plt.savefig("Subplot.png")
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/dc4b23a3-0c0e-4b2d-9425-6624638a41db)
+
+From this plot, it is evident that during recession, the GDP of the country was in a low range, might have afected the overall sales of the company.
+
+### Bubble plot for displaying the impact of seasonality on Automobile Sales.
+<br>How has seasonality impacted the sales, in which months the sales were high or low? Need to Check it for non-recession years to understand the trend.
+
+```python
+size = non_rec_data['Seasonality_Weight']
+
+sns.scatterplot(data = non_rec_data, x = 'Month', y = 'Automobile_Sales', size =size)
+plt.xlabel('Month')
+plt.ylabel('Automobile_Sales')
+plt.title('Seasonality impact on Automobile Sales')
+plt.savefig('Bubble.png')
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/f19797a1-f8c0-456a-9e2f-e288a29e77f4)
+
+it is evident that seasonality has not affected on the overall sales. However, there is a drastic raise in sales in the month of April
+
+
+
+
+
 
 
