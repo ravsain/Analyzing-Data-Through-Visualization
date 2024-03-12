@@ -31,4 +31,9 @@ The dataset includes the following variables:
 <br>
 By examining various factors mentioned above from the dataset, you aim to gain insights into how recessions impacted automobile sales for your company.
 
-
+## Importing Data
+"""
+URL = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DV0101EN-SkillsNetwork/Data%20Files/historical_automobile_sales.csv"
+df = pd.read_csv(URL)
+print('Data downloaded and read into a dataframe!')
+"""
