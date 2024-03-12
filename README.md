@@ -173,9 +173,83 @@ plt.show()
 
 it is evident that seasonality has not affected on the overall sales. However, there is a drastic raise in sales in the month of April
 
+### Pie chart to display the portion of advertising expenditure of XYZAutomotives during recession and non-recession periods to analyze the changes.
+```python
+RAtotal = rec_data['Advertising_Expenditure'].sum()
+NRAtotal = non_rec_data['Advertising_Expenditure'].sum()
+
+plt.figure(figsize=(10, 6))
+
+labels = ('Recession', 'Non-Recession')
+sizes = [RAtotal, NRAtotal]
+plt.pie(sizes, labels=labels, autopct = '%1.1f%%', startangle = 90)
+plt.title('Advertising Expenditure during Recession and Non-Recession Periods')
+plt.savefig('Pie_1.png')
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/7c9b100d-c4f4-4c3a-b96e-cc18fc384a9f)
+
+It seems ABCAutomotives has been spending much more on the advertisements during non-recession periods as compared to during recession times. Fair enough!
+
+## Pie chart to display the total Advertisement expenditure for each vehicle type during recession period to observe the share of each vehicle type in total expenditure during recessions.
+
+```pyhton
+sales_vol_by_vech_type = rec_data.groupby('Vehicle_Type')['Advertising_Expenditure'].sum()
+plt.figure(figsize=(10, 6))
+sizes = sales_vol_by_vech_type.values
+plt.pie(sizes, labels = sales_vol_by_vech_type.index,
+        autopct = '%1.1f%%', startangle = 90)
+plt.title('Share of Each Vehicle Type in Total Expenditure during Recessions')
+plt.savefig('Pie_2.png')
+plt.show()
+```
+![image](https://github.com/ravsain/Analyzing-Data-Through-Visualization/assets/155238122/68d1d29a-b3da-4df7-ac50-5dd5c108c0e6)
 
 
+### Create a map on the hightest sales region/offices of the company during recession period
+```python
+from pyodide.http import pyfetch
+
+async def download(url, filename):
+    response = await pyfetch(url)
+    if response.status == 200:
+        with open(filename, "wb") as f:
+            f.write(await response.bytes())
+
+path = 'https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBMDeveloperSkillsNetwork-DV0101EN-SkillsNetwork/Data%20Files/us-states.json'
+await download(path, "us-states.json")
+
+filename = "us-states.json"
+```
+We found that the datset also contains the location/city for company offices. Now you want to show the recession impact on various offices/city sales by developing a choropleth
+```python
+    # Filter the data for the recession period and specific cities
+    recession_data = df[df['Recession'] == 1]
+
+    # Calculate the total sales by city
+    sales_by_city = recession_data.groupby('City')['Automobile_Sales'].sum().reset_index()
+
+    # Create a base map centered on the United States
+    map1 = folium.Map(location=[37.0902, -95.7129], zoom_start=4)
+
+    # Create a choropleth layer using Folium
+    choropleth = folium.Choropleth(
+        geo_data= 'us-states.json',  # GeoJSON file with state boundaries
+        data=sales_by_city,
+        columns=['City', 'Automobile_Sales'],
+        key_on='feature.properties.name',
+        fill_color='YlOrRd',
+        fill_opacity=0.7,
+        line_opacity=0.2,
+        legend_name='Automobile Sales during Recession'
+    ).add_to(map1)
 
 
+    # Add tooltips to the choropleth layer
+    choropleth.geojson.add_child(
+        folium.features.GeoJsonTooltip(['name'], labels=True)
+    )
 
-
+    # Display the map
+    map1
+```
